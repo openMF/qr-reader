@@ -1,11 +1,15 @@
 import UUID from "uuid/v1.js";
 
-export const openBankAuthUrl = (bank, consentId) => {
-    const authUrl = `${
-        bank.authorizeUrl
-        }?response_type=code&scope=openid profile accounts payments&client_id=${
-        bank.clientId
-        }&redirect_uri=${bank.callbackUrl}&nonce=${UUID()}&consentId=${consentId}&state=${bank.bankId}&consentType=accounts`;
+export const openBankAuthUrl = () => {
+    const authUrl =
+        'https://api.lion.mlabs.dpc.hu:8243/authorize' +
+        '?response_type=code' +
+        '&scope=openid profile accounts payments' +
+        '&client_id=PttPN26uJLQgvRjSrhmh5ShaqZga' +
+        '&redirect_uri=https://acefintech.mlabs.dpc.hu/lionfintech/customer/banks/authorize' +
+        '&nonce=' + UUID() +
+        '&state=2293e2cf-1c54-38cf-9934-6be4e94e60f8' +
+        '&consentType=login';
     console.log(encodeURI(authUrl));
     window.location.assign(encodeURI(authUrl));
 };

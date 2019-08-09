@@ -1,4 +1,5 @@
 import axios from "axios";
+import {login} from "../users/thunks.js";
 import {
   getBankListRequested,
   getBankListFailed,
@@ -60,7 +61,9 @@ export const authorizeBank = (bankId, code) => async dispatch => {
   dispatch(authorizeBankRequested());
 
   try {
-    await axios.get(`${API_URL}/token/v1/code/${code}`, { headers: { "x-tpp-bankid": bankId } });
+    const cred = await axios.get(`${API_URL}/token/v1/code/${code}`, { headers: { "x-tpp-bankid": bankId } });
+    const {userName, password} = cred.data;
+    dispatch(login(btoa(`${userName}:${password}`)));
     dispatch(authorizeBankSucceeded());
   } catch (error) {
     dispatch(authorizeBankFailed(error.response));

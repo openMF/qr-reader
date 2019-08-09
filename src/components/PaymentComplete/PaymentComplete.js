@@ -2,6 +2,7 @@ import React, {PureComponent} from 'react'
 import {Button, Card} from "react-onsenui";
 import {connect} from "react-redux";
 import {NavLink} from "react-router-dom";
+// import {MAX_POLL_RETRY, POLL_INTERVAL} from "../../config/server.js";
 import {clearPayment, clearPaymentError} from "../../store/payment/actions.js";
 import {getTransactionDetail} from "../../store/payment/thunks.js";
 import {DataList} from "../DataList/DataList.js";
@@ -11,11 +12,36 @@ import Loading from "../Loading/Loading.js";
 import './PaymentComplete.css';
 
 class PaymentComplete extends PureComponent {
+    state = {
+        showContinuePolling: false
+    };
+
+    //startPolling = () => {
+    //    const {match, getTransactionDetails, resetPollingCounter, requestCount, isPolling, location} = this.props;
+    //    const {showContinuePolling} = this.state;
+    //    const params = new URLSearchParams(location.search);
+    //    const bankId = params.get('bankId');
+//
+    //    if(showContinuePolling){
+    //        resetPollingCounter();
+    //        this.setState({showContinuePolling: false});
+    //    }
+    //    this.interval = setInterval(() => {
+    //        if (requestCount === 0 || (isPolling && requestCount < MAX_POLL_RETRY)) {
+    //            getTransactionDetails(match.params.transactionId, bankId);
+    //        } else {
+    //            clearInterval(this.interval);
+    //            this.setState({showContinuePolling: true});
+    //        }
+    //    }, POLL_INTERVAL)
+    //};
 
     componentDidMount() {
-        const {match, location, getTransactionDetails} = this.props;
+        const {match, getTransactionDetails, location} = this.props;
         const params = new URLSearchParams(location.search);
-        getTransactionDetails(match.params.transactionId, params.get('bankId'))
+        const bankId = params.get('bankId');
+        getTransactionDetails(match.params.transactionId, bankId);
+        //this.startPolling();
     }
 
     componentWillUnmount() {
@@ -38,7 +64,7 @@ class PaymentComplete extends PureComponent {
                 ['Description', transaction.initiation.supplementaryData.interopData.note],
                 ['Transaction id:', transaction.domesticPaymentId],
                 ['Status:', transaction.status],
-                ...transaction.charges.map(charge => [charge.chargeBearer, `${charge.amount.amount} ${charge.amount.currency}`])
+                ['Charges', transaction.charges.map(charge => [charge.chargeBearer, `${charge.amount.amount} ${charge.amount.currency}`].join(' '))]
             ]
         }
 
@@ -70,7 +96,9 @@ class PaymentComplete extends PureComponent {
 const mapStateToProps = (state) => ({
     transaction: state.payment.transaction,
     loading: state.payment.loading,
-    error: state.payment.error
+    error: state.payment.error,
+    requestCount: state.payment.requestCount,
+    isPolling: state.payment.isPolling
 });
 
 const mapDispatchToProps = (dispatch) => ({

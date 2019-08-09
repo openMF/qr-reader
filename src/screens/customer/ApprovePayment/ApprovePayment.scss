@@ -1,0 +1,8 @@
+.button-group{
+  display: flex;
+  justify-content: space-between;
+
+  .lion & ons-button.button--large--cta{
+    margin: 0 10px;
+  }
+}

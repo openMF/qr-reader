@@ -4,6 +4,7 @@ import {withRouter} from "react-router-dom";
 import {ProgressCircular, Icon} from "react-onsenui";
 import {authorizeBank} from "../../../store/bank/thunks";
 import Layout from "../../../components/Layout/Layout";
+import {login} from "../../../store/users/thunks.js";
 
 class AuthorizeBank extends Component {
     componentDidMount() {
@@ -58,7 +59,8 @@ const mapStateToProps = state => ({
 });
 
 const mapDispatchToProps = dispatch => ({
-    authorizeBank: (bankId, code) => dispatch(authorizeBank(bankId, code))
+    authorizeBank: (bankId, code) => dispatch(authorizeBank(bankId, code)),
+    login: (credentials, history) => dispatch(login(credentials, dispatch))
 });
 
 export default withRouter(

@@ -10,7 +10,7 @@ import ApprovePayment from "./screens/customer/ApprovePayment/ApprovePayment";
 import PaymentComplete from "./components/PaymentComplete/PaymentComplete";
 import CustomerInitiatedPayment from "./screens/customer/CreatePaymentRequest/CreatePaymentRequest";
 // import './green-gold.scss';
-// import './gold-red.scss';
+import './gold-red.scss';
 // import './dark.scss';
 import ProtectedRoute from "./components/ProtectedRoute/ProtectedRoute";
 import { setBank } from "./store/bank/actions.js";
@@ -22,7 +22,7 @@ import AuthorizeBank from "./screens/customer/AuthorizeBank/AuthorizeBank";
 import { tryLogin, logout } from "./store/users/thunks";
 
 const NavRootW = props => {
-  const theme = "elephant";
+  const theme = "lion";
   props.setTheme(theme);
   return (
     <div className={`App ${theme}`}>
@@ -38,7 +38,7 @@ const NavRootW = props => {
                 !props.role ? (
                   <Redirect to={`/login`} />
                 ) : (
-                  <Redirect to={`/customer/banks`} />
+                  <Redirect to={`/customer/accounts`} />
                 )
               }
             />
@@ -47,7 +47,7 @@ const NavRootW = props => {
               path={`/customer/banks`}
               component={ConnectedBanks}
             />
-            <ProtectedRoute
+            <Route
               exact
               path={`/customer/banks/authorize`}
               component={AuthorizeBank}
@@ -71,7 +71,7 @@ const NavRootW = props => {
               component={CustomerInitiatedPayment}
             />
             <ProtectedRoute
-              path={`/customer/approvePayment`}
+              path={`/customer/approvePayment/:consentId`}
               component={ApprovePayment}
             />
             <ProtectedRoute
@@ -107,7 +107,7 @@ class App extends Component {
     }
 
     axios.interceptors.request.use(config => {
-      const credentials = localStorage.getItem("cred");
+      const credentials = localStorage.getItem("lionfintech_cred");
       if (credentials) {
         config.headers["Authorization"] = `Basic ${credentials}`;
       }

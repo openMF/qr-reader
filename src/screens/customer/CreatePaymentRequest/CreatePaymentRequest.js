@@ -3,7 +3,7 @@ import Layout from "../../../components/Layout/Layout.js";
 import {Button, Input} from "react-onsenui";
 import {connect} from 'react-redux';
 import {withRouter} from 'react-router-dom';
-import {customerInitiatedPaymentRequest, preparePayment} from "../../../store/payment/thunks.js";
+import {preparePayment} from "../../../store/payment/thunks.js";
 
 class CreatePaymentRequest extends PureComponent {
 
@@ -23,7 +23,7 @@ class CreatePaymentRequest extends PureComponent {
 
     render() {
         const {amount, description, merchantId, accountId, bankId} = this.state;
-        const {preparePayment} = this.props;
+        const {preparePayment, history} = this.props;
         return (<Layout>
             <h1>Send Payment</h1>
             <div>
@@ -53,7 +53,7 @@ class CreatePaymentRequest extends PureComponent {
                     placeholder='Phone number'
                 />
             </div>
-            <Button modifier="large--cta" onClick={() => preparePayment(bankId, amount, 'TZS', merchantId, accountId, description)}>
+            <Button modifier="large--cta" onClick={() => preparePayment(bankId, amount, 'TZS', merchantId, accountId, description, history)}>
                 Create Payment Request
             </Button>
         </Layout>)
@@ -61,8 +61,7 @@ class CreatePaymentRequest extends PureComponent {
 }
 
 const matchDispatchToProps = (dispatch) => ({
-    sendPaymentRequest: (paymentInfo, history) => dispatch(customerInitiatedPaymentRequest(paymentInfo, history)),
-    preparePayment: (bankId, amount, currency, payeeId, payerAccountId, note) => dispatch(preparePayment(bankId, amount, currency, payeeId, payerAccountId, note))
+    preparePayment: (bankId, amount, currency, payeeId, payerAccountId, note, history) => dispatch(preparePayment(bankId, amount, currency, payeeId, payerAccountId, note, history))
 });
 
 export default withRouter(connect(state=> ({paymentRequestSent:state.payment.paymentRequestSent}), matchDispatchToProps) (CreatePaymentRequest));
